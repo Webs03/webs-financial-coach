@@ -1,16 +1,24 @@
-# webs_financial_assistant
+# Webs Financial Coach 💰
 
-Webs ai assistant that assists on how to achieve financial freedom.
+A Flutter-based AI financial coaching app that helps users track income/expenses and get personalized financial advice.
+
+## Features
+- 💬 AI-powered financial coaching
+- 💰 Income & expense tracking
+- 📊 Financial dashboard with insights
+- 🎯 Personalized savings recommendations
+- 🌐 Deployed on Firebase Hosting
+
+## Tech Stack
+- **Frontend**: Flutter, Dart
+- **State Management**: Provider
+- **AI Engine**: Custom financial logic
+- **Deployment**: Firebase Hosting
+
+## Live Demo
+[https://webs-financial-coach.web.app/]
 
 ## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter pub get
+flutter run

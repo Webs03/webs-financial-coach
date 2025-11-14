@@ -1,13 +1,17 @@
 import 'package:flutter/foundation.dart';
-import '../models/transaction_model.dart';
+import '../models/transaction_model.dart' as local;
+import '../services/firebase_service.dart';
 
 class TransactionProvider with ChangeNotifier {
-  final List<Transaction> _transactions = [];
+  final List<local.Transaction> _transactions = [];
+  final FirebaseService _firebaseService = FirebaseService();
+  bool _isLoading = false;
 
-  List<Transaction> get transactions => _transactions;
+  List<local.Transaction> get transactions => _transactions;
+  bool get isLoading => _isLoading;
 
-  // Get transactions for current month
-  List<Transaction> get currentMonthTransactions {
+  // Add all the missing getter methods
+  List<local.Transaction> get currentMonthTransactions {
     final now = DateTime.now();
     return _transactions.where((transaction) {
       return transaction.date.month == now.month &&
@@ -15,38 +19,22 @@ class TransactionProvider with ChangeNotifier {
     }).toList();
   }
 
-  // Add new transaction
-  void addTransaction(Transaction transaction) {
-    _transactions.add(transaction);
-    notifyListeners();
-  }
-
-  // Delete transaction
-  void deleteTransaction(String id) {
-    _transactions.removeWhere((transaction) => transaction.id == id);
-    notifyListeners();
-  }
-
-  // Get total income for current month
   double get currentMonthIncome {
     return currentMonthTransactions
         .where((transaction) => transaction.isIncome)
         .fold(0, (sum, transaction) => sum + transaction.amount);
   }
 
-  // Get total expenses for current month
   double get currentMonthExpenses {
     return currentMonthTransactions
         .where((transaction) => !transaction.isIncome)
         .fold(0, (sum, transaction) => sum + transaction.amount);
   }
 
-  // Get net savings for current month
   double get currentMonthSavings {
     return currentMonthIncome - currentMonthExpenses;
   }
 
-  // Get transactions by category
   Map<String, double> get expensesByCategory {
     final Map<String, double> categoryMap = {};
 
@@ -58,5 +46,52 @@ class TransactionProvider with ChangeNotifier {
     }
 
     return categoryMap;
+  }
+
+  TransactionProvider() {
+    _initializeAuth();
+    _loadTransactions();
+  }
+
+  Future<void> _initializeAuth() async {
+    try {
+      await _firebaseService.signInAnonymously();
+      print('✅ User signed in: ${_firebaseService.currentUser?.uid}');
+      print('🔥 Firebase connected successfully!');
+    } catch (e) {
+      print('❌ Firebase auth error: $e');
+    }
+  }
+
+  void _loadTransactions() {
+    _firebaseService.getTransactions().listen((transactions) {
+      _transactions.clear();
+      _transactions.addAll(transactions);
+      notifyListeners();
+      print('📊 Loaded ${transactions.length} transactions');
+    });
+  }
+
+  void addTransaction(local.Transaction transaction) async {
+    _transactions.add(transaction);
+    notifyListeners();
+
+    // Save to Firebase
+    await _firebaseService.saveTransaction(transaction);
+    print('💾 Saved transaction to Firebase');
+  }
+
+  void deleteTransaction(String id) async {
+    _transactions.removeWhere((transaction) => transaction.id == id);
+    notifyListeners();
+
+    // Delete from Firebase
+    await _firebaseService.deleteTransaction(id);
+    print('🗑️ Deleted transaction from Firebase');
+  }
+
+  void clearAllTransactions() {
+    _transactions.clear();
+    notifyListeners();
   }
 }

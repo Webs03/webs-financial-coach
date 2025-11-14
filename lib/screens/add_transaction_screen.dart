@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/transaction_provider.dart';
-import '../models/transaction_model.dart';
-import '../utils/constants.dart';
 import 'package:uuid/uuid.dart';
+import '../providers/transaction_provider.dart';
+import '../models/transaction_model.dart' as local;
+import '../utils/constants.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({super.key});
@@ -168,7 +168,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   void _saveTransaction() {
     if (_formKey.currentState!.validate()) {
-      final transaction = Transaction(
+      final transaction = local.Transaction(
         id: const Uuid().v4(),
         amount: double.parse(_amountController.text),
         category: _selectedCategory,
@@ -185,5 +185,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
       Navigator.pop(context);
     }
+  }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
   }
 }

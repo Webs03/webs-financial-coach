@@ -62,7 +62,7 @@ class DashboardScreen extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
+            MaterialPageRoute(builder: (context) => AddTransactionScreen()),
           );
         },
         backgroundColor: Colors.blue[700],
@@ -138,7 +138,7 @@ class DashboardScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const AddTransactionScreen(),
+                      builder: (context) => AddTransactionScreen(),
                     ),
                   );
                 },
@@ -154,7 +154,7 @@ class DashboardScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const AddTransactionScreen(),
+                      builder: (context) => AddTransactionScreen(),
                     ),
                   );
                 },
